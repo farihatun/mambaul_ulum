@@ -2,129 +2,155 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between mb-4">
+<div class="container-fluid">
 
-    <h3>Data Absensi</h3>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-success">
+        Data Absensi Santri
+    </h3>
 
     <a href="{{ route('absensi.create') }}"
        class="btn btn-success">
-
-        + Tambah Absensi
-
+        <i class="bi bi-plus-circle"></i>
+        Tambah Absensi
     </a>
-
 </div>
 
-<div class="card shadow">
+<div class="card border-0 shadow-lg rounded-4">
 
     <div class="card-body">
 
-        <table class="table table-bordered table-hover">
+        <div class="table-responsive">
 
-            <thead class="table-success">
+            <table class="table table-hover align-middle">
 
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Tanggal</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
+                <thead class="table-success">
 
-            </thead>
+                    <tr>
+                        <th width="60">No</th>
+                        <th>Nama Santri</th>
+                        <th>Tanggal</th>
+                        <th>Jam</th>
+                        <th>Status</th>
+                        <th>Keterangan</th>
+                        <th width="180">Aksi</th>
+                    </tr>
 
-            <tbody>
+                </thead>
 
-                @forelse($absensi as $item)
+                <tbody>
 
-                <tr>
+                    @forelse($absensi as $item)
 
-                    <td>{{ $loop->iteration }}</td>
+                    <tr>
 
-                    <td>{{ $item->user->name ?? '-' }}</td>
+                        <td>
+                            {{ $loop->iteration }}
+                        </td>
 
-                    <td>{{ $item->tanggal }}</td>
+                        <td>
+                            {{ $item->user->name ?? '-' }}
+                        </td>
 
-                    <td>
+                        <td>
+                            {{ $item->tanggal }}
+                        </td>
 
-                        @if($item->status == 'Hadir')
+                        <td>
+                            {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }}
+                        </td>
 
-                            <span class="badge bg-success">
-                                Hadir
-                            </span>
+                        <td>
 
-                        @elseif($item->status == 'Izin')
+                            @switch($item->status)
 
-                            <span class="badge bg-warning">
-                                Izin
-                            </span>
+                                @case('Hadir')
+                                    <span class="badge bg-success px-3 py-2">
+                                        Hadir
+                                    </span>
+                                    @break
 
-                        @elseif($item->status == 'Sakit')
+                                @case('Izin')
+                                    <span class="badge bg-warning px-3 py-2">
+                                        Izin
+                                    </span>
+                                    @break
 
-                            <span class="badge bg-info">
-                                Sakit
-                            </span>
+                                @case('Sakit')
+                                    <span class="badge bg-info px-3 py-2">
+                                        Sakit
+                                    </span>
+                                    @break
 
-                        @else
+                                @default
+                                    <span class="badge bg-danger px-3 py-2">
+                                        Alpha
+                                    </span>
 
-                            <span class="badge bg-danger">
-                                Alpa
-                            </span>
+                            @endswitch
 
-                        @endif
+                        </td>
 
-                    </td>
+                        <td>
+                            {{ $item->keterangan ?? '-' }}
+                        </td>
 
-                    <td>
+                        <td>
 
-                        <a href="{{ route('absensi.edit',$item->id) }}"
-                           class="btn btn-warning btn-sm">
+                            <a href="{{ route('absensi.edit', $item->id) }}"
+                               class="btn btn-warning btn-sm">
 
-                           Edit
+                                Edit
 
-                        </a>
+                            </a>
 
-                        <form
-                            action="{{ route('absensi.destroy',$item->id) }}"
-                            method="POST"
-                            class="d-inline">
+                            <form action="{{ route('absensi.destroy', $item->id) }}"
+                                  method="POST"
+                                  class="d-inline">
 
-                            @csrf
-                            @method('DELETE')
+                                @csrf
+                                @method('DELETE')
 
-                            <button
-                                class="btn btn-danger btn-sm"
-                                onclick="return confirm('Yakin hapus?')">
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Yakin ingin menghapus data ini?')">
 
-                                Hapus
+                                    Hapus
 
-                            </button>
+                                </button>
 
-                        </form>
+                            </form>
 
-                    </td>
+                        </td>
 
-                </tr>
+                    </tr>
 
-                @empty
+                    @empty
 
-                <tr>
+                    <tr>
 
-                    <td colspan="5" class="text-center">
+                        <td colspan="7"
+                            class="text-center py-4">
 
-                        Belum ada data absensi
+                            Belum ada data absensi
 
-                    </td>
+                        </td>
 
-                </tr>
+                    </tr>
 
-                @endforelse
+                    @endforelse
 
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
+
+</div>
+
 
 </div>
 

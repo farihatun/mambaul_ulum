@@ -24,7 +24,7 @@
     color:white;
     border-radius:22px;
     padding:30px;
-    text-align:center;
+    text-align:center;  
     box-shadow:0 15px 35px rgba(0,0,0,.15);
     position:relative;
     overflow:hidden;

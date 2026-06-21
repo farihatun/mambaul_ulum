@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AbsensiController;
+use App\Http\Controllers\Api\ProfileController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +28,23 @@ Route::get('/test', function () {
 Route::prefix('auth')->group(function () {
 
     Route::post('/register', [AuthController::class, 'register']);
-
     Route::post('/login', [AuthController::class, 'login']);
 });
+
+
+
+Route::get('/profile/{id}', [ProfileController::class, 'show']);
+Route::post('/profile/update/{id}', [ProfileController::class, 'update']);
+
+/*
+|--------------------------------------------------------------------------
+| PROFILE
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/profile/{id}', [ProfileController::class, 'show']);
+
+Route::post('/profile/update/{id}', [ProfileController::class, 'update']);
 
 /*
 |--------------------------------------------------------------------------
@@ -39,12 +55,8 @@ Route::prefix('auth')->group(function () {
 Route::prefix('absensi')->group(function () {
 
     Route::get('/', [AbsensiController::class, 'index']);
-
     Route::post('/', [AbsensiController::class, 'store']);
-
     Route::get('/{id}', [AbsensiController::class, 'show']);
-
     Route::put('/{id}', [AbsensiController::class, 'update']);
-
     Route::delete('/{id}', [AbsensiController::class, 'destroy']);
 });
