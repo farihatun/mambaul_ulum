@@ -11,30 +11,30 @@ class ModulController extends Controller
 {
     private function fileUrl($file)
     {
-        return 'http://192.168.1.10:8000/storage/' . $file;
+        return 'http://157.10.252.115/storage/' . $file;
     }
 
     public function index()
     {
         $moduls = Modul::latest()->get();
 
-        $data = $moduls->map(function ($modul) {
-            return [
-                'id' => $modul->id,
-                'judul' => $modul->judul,
-                'deskripsi' => $modul->deskripsi,
-                'file' => $modul->file,
-                'file_url' => $this->fileUrl($modul->file),
-                'uploaded_by' => $modul->uploaded_by,
-                'created_at' => $modul->created_at,
-                'updated_at' => $modul->updated_at,
-            ];
-        });
+        // $data = $moduls->map(function ($modul) {
+        //     return [
+        //         'id' => $modul->id,
+        //         'judul' => $modul->judul,
+        //         'deskripsi' => $modul->deskripsi,
+        //         'file' => $modul->file,
+        //         'file_url' => $this->fileUrl($modul->file),
+        //         'uploaded_by' => $modul->uploaded_by,
+        //         'created_at' => $modul->created_at,
+        //         'updated_at' => $modul->updated_at,
+        //     ];
+        // });
 
         return response()->json([
             'success' => true,
             'message' => 'Data modul berhasil diambil',
-            'data' => $data
+            'data' => $moduls
         ]);
     }
 
