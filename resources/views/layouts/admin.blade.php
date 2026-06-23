@@ -221,7 +221,7 @@ body{
             <span>Absensi</span>
         </a>
 
-        <a href="{{ route('modul.index') }}">
+        <a href="{{ route('admin-modul.index') }}">
             <i class="bi bi-file-earmark-pdf-fill"></i>
             <span>Modul</span>
         </a>
