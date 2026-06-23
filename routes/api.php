@@ -60,3 +60,7 @@ Route::prefix('absensi')->group(function () {
     Route::put('/{id}', [AbsensiController::class, 'update']);
     Route::delete('/{id}', [AbsensiController::class, 'destroy']);
 });
+
+
+// route list module
+Route::resource('modul', ModulController::class);
