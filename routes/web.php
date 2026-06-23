@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
     /*
     | MODUL
     */
-    Route::resource('modul', ModulController::class);
+    Route::resource('admin-modul', ModulController::class);
 
     /*
     | KITAB
