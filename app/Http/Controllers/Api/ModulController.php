@@ -18,23 +18,23 @@ class ModulController extends Controller
     {
         $moduls = Modul::latest()->get();
 
-        // $data = $moduls->map(function ($modul) {
-        //     return [
-        //         'id' => $modul->id,
-        //         'judul' => $modul->judul,
-        //         'deskripsi' => $modul->deskripsi,
-        //         'file' => $modul->file,
-        //         'file_url' => $this->fileUrl($modul->file),
-        //         'uploaded_by' => $modul->uploaded_by,
-        //         'created_at' => $modul->created_at,
-        //         'updated_at' => $modul->updated_at,
-        //     ];
-        // });
+        $data = $moduls->map(function ($modul) {
+            return [
+                'id' => $modul->id,
+                'judul' => $modul->judul,
+                'deskripsi' => $modul->deskripsi,
+                'file' => $modul->file,
+                'file_url' => $this->fileUrl($modul->file),
+                'uploaded_by' => $modul->uploaded_by,
+                'created_at' => $modul->created_at,
+                'updated_at' => $modul->updated_at,
+            ];
+        });
 
         return response()->json([
             'success' => true,
             'message' => 'Data modul berhasil diambil',
-            'data' => $moduls
+            'data' => $data
         ]);
     }
 
