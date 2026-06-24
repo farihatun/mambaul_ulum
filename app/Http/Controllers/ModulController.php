@@ -39,7 +39,7 @@ class ModulController extends Controller
         ]);
 
         return redirect()
-            ->route('modul.index')
+            ->route('admin-modul.index')
             ->with('success', 'Modul berhasil ditambahkan');
     }
 
@@ -80,7 +80,7 @@ class ModulController extends Controller
         $modul->update($data);
 
         return redirect()
-            ->route('modul.index')
+            ->route('admin-modul.index')
             ->with('success', 'Modul berhasil diperbarui');
     }
 
@@ -98,7 +98,7 @@ class ModulController extends Controller
         $modul->delete();
 
         return redirect()
-            ->route('modul.index')
+            ->route('admin-modul.index')
             ->with('success', 'Modul berhasil dihapus');
     }
 }
