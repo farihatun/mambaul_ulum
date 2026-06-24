@@ -32,7 +32,7 @@ class AbsensiController extends Controller
         ]);
 
         $cek = Absensi::where('user_id', $request->user_id)
-            ->where('tanggal', '=', $today)
+            ->where('tanggal', '==', $today)
             ->first();
 
         if ($cek) {
