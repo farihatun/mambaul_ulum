@@ -32,14 +32,14 @@ class AbsensiController extends Controller
         ]);
 
         $cek = Absensi::where('user_id', $request->user_id)
-            ->whereDate('tanggal', $today)
+            ->where('tanggal', '=', $today)
             ->first();
 
         if ($cek) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda sudah absen hari ini'
-            ], 400);
+            ], 200);
         }
 
         $absensi = Absensi::create([
