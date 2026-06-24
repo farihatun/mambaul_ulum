@@ -5,21 +5,25 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
+        $today = Carbon::today()->toDateString();
         return response()->json([
             'success' => true,
-            'data' => Absensi::with('user')
-                ->latest()
+            'data' => Absensi::with('user')->where('tanggal', '=', $today)
+                ->first()
                 ->get()
         ]);
     }
 
     public function store(Request $request)
     {
+        $today = Carbon::today()->toDateString();
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'tanggal' => 'required|date',
@@ -28,7 +32,7 @@ class AbsensiController extends Controller
         ]);
 
         $cek = Absensi::where('user_id', $request->user_id)
-            ->whereDate('tanggal', $request->tanggal)
+            ->whereDate('tanggal', $today)
             ->first();
 
         if ($cek) {
