@@ -44,7 +44,7 @@ class AbsensiController extends Controller
 
         $absensi = Absensi::create([
             'user_id' => $request->user_id,
-            'tanggal' => $request->tanggal,
+            'tanggal' => $today,
             'status' => $request->status,
             'alasan' => $request->alasan
         ]);
