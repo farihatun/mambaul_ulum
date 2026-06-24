@@ -72,15 +72,8 @@ class ModulController extends Controller
             'deskripsi' => $request->deskripsi,
         ];
 
-        if ($request->hasFile('file')) {
-
-            if (
-                $modul->file &&
-                Storage::disk('public')->exists($modul->file)
-            ) {
-                Storage::disk('public')->delete($modul->file);
-            }
-
+        if ($request->hasFile('file') && $request->hasFile('file') !== $modul->file) {
+            Storage::disk('public')->delete($modul->file);
             $data['file'] = $request->file('file')->store('modul', 'public');
         }
 
