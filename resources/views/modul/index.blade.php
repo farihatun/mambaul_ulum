@@ -85,7 +85,7 @@
     <div class="d-flex gap-2">
 
         <!-- Tombol Upload -->
-        <a href="{{ route('modul.create') }}"
+        <a href="{{ route('admin-modul.create') }}"
            class="btn btn-success rounded-pill">
 
             <i class="bi bi-plus-circle"></i>
@@ -112,7 +112,7 @@
             File yang diupload akan langsung tersedia pada aplikasi user.
         </p>
 
-        <a href="{{ route('modul.create') }}"
+        <a href="{{ route('admin-modul.create') }}"
            class="btn btn-upload">
 
            <i class="bi bi-cloud-upload"></i>
@@ -169,14 +169,14 @@
 
                 </a>
 
-                <a href="{{ route('modul.edit',$modul->id) }}"
+                <a href="{{ route('admin-modul.edit',$modul->id) }}"
                    class="btn btn-warning">
 
                     <i class="bi bi-pencil"></i>
 
                 </a>
 
-                <form action="{{ route('modul.destroy',$modul->id) }}"
+                <form action="{{ route('admin-modul.destroy',$modul->id) }}"
                       method="POST">
 
                     @csrf

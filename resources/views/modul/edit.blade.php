@@ -13,7 +13,7 @@
     <div class="card-body">
 
         <form
-            action="{{ route('modul.update',$modul->id) }}"
+            action="{{ route('admin-modul.update',$modul->id) }}"
             method="POST"
             enctype="multipart/form-data">
 
@@ -86,7 +86,7 @@
 
             </button>
 
-            <a href="{{ route('modul.index') }}"
+            <a href="{{ route('admin-modul.index') }}"
                class="btn btn-secondary">
 
                 Kembali

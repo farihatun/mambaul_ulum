@@ -20,7 +20,7 @@
         </div>
         @endif
 
-        <form action="{{ route('modul.store') }}"
+        <form action="{{ route('admin-modul.store') }}"
               method="POST"
               enctype="multipart/form-data">
 
@@ -65,7 +65,7 @@
                 Simpan
             </button>
 
-            <a href="{{ route('modul.index') }}"
+            <a href="{{ route('admin-modul.index') }}"
                class="btn btn-secondary">
 
                 Kembali
