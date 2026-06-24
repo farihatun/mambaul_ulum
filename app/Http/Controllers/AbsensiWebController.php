@@ -24,16 +24,14 @@ class AbsensiWebController extends Controller
         $absensi = Absensi::find($id);
 
         if (!$absensi) {
-            return response()->json([
-                'success' => false
-            ], 404);
+            return redirect()
+                ->route('absensi.index')->with('success', 'Absensi gagal dihapus');
         }
 
         $absensi->delete();
 
-        return view(
-            'absensi.index',
-            compact('absensi')
-        );
+        return redirect()
+            ->route('absensi.index')
+            ->with('success', 'Absensi berhasil dihapus');
     }
 }
