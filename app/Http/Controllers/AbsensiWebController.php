@@ -19,4 +19,21 @@ class AbsensiWebController extends Controller
             compact('absensi')
         );
     }
+    public function destroy($id)
+    {
+        $absensi = Absensi::find($id);
+
+        if (!$absensi) {
+            return response()->json([
+                'success' => false
+            ], 404);
+        }
+
+        $absensi->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil dihapus'
+        ]);
+    }
 }
