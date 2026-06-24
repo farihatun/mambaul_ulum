@@ -25,7 +25,7 @@ class AbsensiController extends Controller
     {
         $today = Carbon::today()->toDateString();
         $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required|exists:users_id',
             'tanggal' => 'required|date',
             'status' => 'required|in:Hadir,Izin,Sakit,Alpa',
             'alasan' => 'nullable|string'
