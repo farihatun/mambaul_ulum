@@ -31,9 +31,9 @@ class AbsensiWebController extends Controller
 
         $absensi->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
+        return view(
+            'absensi.index',
+            compact('absensi')
+        );
     }
 }
