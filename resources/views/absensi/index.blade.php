@@ -4,153 +4,113 @@
 
 <div class="container-fluid">
 
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-success">
+            Data Absensi Santri
+        </h3>
+    </div>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold text-success">
-        Data Absensi Santri
-    </h3>
+    <div class="card border-0 shadow-lg rounded-4">
 
-    <a href="{{ route('absensi.create') }}"
-       class="btn btn-success">
-        <i class="bi bi-plus-circle"></i>
-        Tambah Absensi
-    </a>
-</div>
+        <div class="card-body">
 
-<div class="card border-0 shadow-lg rounded-4">
+            <div class="table-responsive">
 
-    <div class="card-body">
+                <table class="table table-hover align-middle">
 
-        <div class="table-responsive">
+                    <thead class="table-success">
 
-            <table class="table table-hover align-middle">
+                        <tr>
+                            <th width="60">No</th>
+                            <th>Nama Santri</th>
+                            <th>Tanggal</th>
+                            <th>Jam</th>
+                            <th>Status</th>
+                            <th>Keterangan</th>
+                        </tr>
 
-                <thead class="table-success">
+                    </thead>
 
-                    <tr>
-                        <th width="60">No</th>
-                        <th>Nama Santri</th>
-                        <th>Tanggal</th>
-                        <th>Jam</th>
-                        <th>Status</th>
-                        <th>Keterangan</th>
-                        <th width="180">Aksi</th>
-                    </tr>
+                    <tbody>
 
-                </thead>
+                        @forelse($absensi as $item)
 
-                <tbody>
+                        <tr>
 
-                    @forelse($absensi as $item)
+                            <td>
+                                {{ $loop->iteration }}
+                            </td>
 
-                    <tr>
+                            <td>
+                                {{ $item->user->name ?? '-' }}
+                            </td>
 
-                        <td>
-                            {{ $loop->iteration }}
-                        </td>
+                            <td>
+                                {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
+                            </td>
 
-                        <td>
-                            {{ $item->user->name ?? '-' }}
-                        </td>
+                            <td>
+                                {{ \Carbon\Carbon::parse($item->created_at)->timezone('Asia/Makassar')->format('H:i') }}
+                            </td>
 
-                        <td>
-                            {{ $item->tanggal }}
-                        </td>
+                            <td>
 
-                        <td>
-                            {{ \Carbon\Carbon::parse($item->created_at)->format('H:i') }}
-                        </td>
+                                @switch($item->status)
 
-                        <td>
+                                    @case('Hadir')
+                                        <span class="badge bg-success px-3 py-2">
+                                            Hadir
+                                        </span>
+                                        @break
 
-                            @switch($item->status)
+                                    @case('Izin')
+                                        <span class="badge bg-warning px-3 py-2">
+                                            Izin
+                                        </span>
+                                        @break
 
-                                @case('Hadir')
-                                    <span class="badge bg-success px-3 py-2">
-                                        Hadir
-                                    </span>
-                                    @break
+                                    @case('Sakit')
+                                        <span class="badge bg-info px-3 py-2">
+                                            Sakit
+                                        </span>
+                                        @break
 
-                                @case('Izin')
-                                    <span class="badge bg-warning px-3 py-2">
-                                        Izin
-                                    </span>
-                                    @break
+                                    @default
+                                        <span class="badge bg-danger px-3 py-2">
+                                            Alpha
+                                        </span>
 
-                                @case('Sakit')
-                                    <span class="badge bg-info px-3 py-2">
-                                        Sakit
-                                    </span>
-                                    @break
+                                @endswitch
 
-                                @default
-                                    <span class="badge bg-danger px-3 py-2">
-                                        Alpha
-                                    </span>
+                            </td>
 
-                            @endswitch
+                            <td>
+                                {{ $item->keterangan ?? '-' }}
+                            </td>
 
-                        </td>
+                        </tr>
 
-                        <td>
-                            {{ $item->keterangan ?? '-' }}
-                        </td>
+                        @empty
 
-                        <td>
+                        <tr>
 
-                            <a href="{{ route('absensi.edit', $item->id) }}"
-                               class="btn btn-warning btn-sm">
+                            <td colspan="6" class="text-center py-4">
+                                Belum ada data absensi
+                            </td>
 
-                                Edit
+                        </tr>
 
-                            </a>
+                        @endforelse
 
-                            <form action="{{ route('absensi.destroy', $item->id) }}"
-                                  method="POST"
-                                  class="d-inline">
+                    </tbody>
 
-                                @csrf
-                                @method('DELETE')
+                </table>
 
-                                <button type="submit"
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Yakin ingin menghapus data ini?')">
-
-                                    Hapus
-
-                                </button>
-
-                            </form>
-
-                        </td>
-
-                    </tr>
-
-                    @empty
-
-                    <tr>
-
-                        <td colspan="7"
-                            class="text-center py-4">
-
-                            Belum ada data absensi
-
-                        </td>
-
-                    </tr>
-
-                    @endforelse
-
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
 
     </div>
-
-</div>
-
 
 </div>
 
