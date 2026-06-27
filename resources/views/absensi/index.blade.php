@@ -26,7 +26,7 @@
                             <th>Tanggal</th>
                             <th>Jam</th>
                             <th>Status</th>
-                            <th>Keterangan</th>
+                            <th>alasan</th>
                         </tr>
 
                     </thead>
@@ -85,7 +85,7 @@
                             </td>
 
                             <td>
-                                {{ $item->keterangan ?? '-' }}
+                                {{ $item->alasan ?? '-' }}
                             </td>
 
                         </tr>
