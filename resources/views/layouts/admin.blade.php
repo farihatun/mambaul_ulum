@@ -52,6 +52,18 @@ body{
     opacity:.8;
 }
 
+/* Tambahan CSS untuk logo */
+.logo-sidebar{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:white;
+    padding:8px;
+    margin-bottom:10px;
+    object-fit:contain;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
 .sidebar-menu{
     padding:15px;
 }
@@ -200,7 +212,12 @@ body{
 <div class="sidebar">
 
     <div class="sidebar-header">
-        <h4>🕌 Mamba'ul Ulum</h4>
+        <!-- Emoji masjid diganti dengan logo.png -->
+        <img
+            src="{{ asset('images/logo.png') }}"
+            alt="Logo Mamba'ul Ulum"
+            class="logo-sidebar">
+        <h4>Mamba'ul Ulum</h4>
         <small>Admin Panel</small>
     </div>
 

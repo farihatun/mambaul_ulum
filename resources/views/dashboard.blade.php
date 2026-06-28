@@ -80,6 +80,22 @@
     transform:translateY(-5px);
 }
 
+.time-info {
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 8px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-top: 12px;
+}
+
+.time-info i {
+    font-size: 18px;
+}
+
 </style>
 
 <div class="dashboard-banner">
@@ -101,6 +117,24 @@
                 Kelola Modul, Absensi, Hizib, Kitab,
                 dan Al-Barzanji dalam satu dashboard.
             </p>
+
+            <!-- Info Waktu Sholat Berikutnya -->
+            <div class="time-info">
+                <i class="bi bi-clock"></i>
+                <span id="jamSekarang" style="font-weight: 600;">
+                    {{ date('H:i:s') }}
+                </span>
+                <span style="opacity:0.5;">|</span>
+                <i class="bi bi-moon-stars"></i>
+                <span>
+                    Menuju {{ $nextPrayer ?? 'Dzuhur' }}
+                    <span style="font-weight: 600; color: #fcd34d;">{{ $nextPrayerTime ?? '12:15' }}</span>
+                </span>
+                <span style="opacity:0.5;">|</span>
+                <span id="countdownSholat" style="font-weight: 600; color: #fcd34d;">
+                    {{ $countdown ?? '00:00:00' }}
+                </span>
+            </div>
 
         </div>
 
@@ -184,7 +218,7 @@
 
                 <div class="card-body">
 
-                    <i class="bi bi-moon-stars"></i>
+                    <i class="bi bi-book"></i>
 
                     <h4 class="mt-3">
                         Hizib
@@ -240,7 +274,7 @@
 
                 <div class="card-body">
 
-                    <i class="bi bi-music-note-beamed"></i>
+                    <i class="bi bi-book"></i>
 
                     <h4 class="mt-3">
                         Al-Barzanji
@@ -288,9 +322,10 @@
 
 </div>
 
-<div class="row mt-4">
+<!-- Statistik - Hanya 2 Kolom: Absensi dan Modul -->
+<div class="row mt-4 justify-content-center">
 
-    <div class="col-md-3 mb-3">
+    <div class="col-md-5 mb-3">
 
         <div class="card stat-card">
 
@@ -298,9 +333,9 @@
 
                 <i class="bi bi-clipboard-data fs-1 text-primary"></i>
 
-                <h2>{{ $jumlahAbsensi }}</h2>
+                <h2>{{ $jumlahAbsensi ?? 0 }}</h2>
 
-                <p>Total Absensi</p>
+                <p class="mb-0">Total Absensi</p>
 
             </div>
 
@@ -308,7 +343,7 @@
 
     </div>
 
-    <div class="col-md-3 mb-3">
+    <div class="col-md-5 mb-3">
 
         <div class="card stat-card">
 
@@ -316,45 +351,9 @@
 
                 <i class="bi bi-book fs-1 text-success"></i>
 
-                <h2>{{ $jumlahModul }}</h2>
+                <h2>{{ $jumlahModul ?? 0 }}</h2>
 
-                <p>Total Modul</p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-3 mb-3">
-
-        <div class="card stat-card">
-
-            <div class="card-body text-center">
-
-                <i class="bi bi-moon-stars fs-1 text-warning"></i>
-
-                <h2>{{ $jumlahHizib }}</h2>
-
-                <p>Total Hizib</p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-3 mb-3">
-
-        <div class="card stat-card">
-
-            <div class="card-body text-center">
-
-                <i class="bi bi-file-earmark-text fs-1 text-danger"></i>
-
-                <h2>{{ $jumlahBarzanji }}</h2>
-
-                <p>Total Barzanji</p>
+                <p class="mb-0">Total Modul</p>
 
             </div>
 
@@ -365,3 +364,43 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+function updateClock() {
+    const now = new Date();
+    const jam = String(now.getHours()).padStart(2, '0');
+    const menit = String(now.getMinutes()).padStart(2, '0');
+    const detik = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('jamSekarang').textContent = jam + ':' + menit + ':' + detik;
+}
+
+function updateCountdown() {
+    const now = new Date();
+    const target = new Date();
+    target.setHours(12, 15, 0, 0);
+
+    let diff = target - now;
+
+    if (diff < 0) {
+        target.setDate(target.getDate() + 1);
+        diff = target - now;
+    }
+
+    const hours = Math.floor(diff / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    const countdown = String(hours).padStart(2, '0') + ':' +
+                      String(minutes).padStart(2, '0') + ':' +
+                      String(seconds).padStart(2, '0');
+
+    document.getElementById('countdownSholat').textContent = countdown;
+}
+
+setInterval(updateClock, 1000);
+setInterval(updateCountdown, 1000);
+updateClock();
+updateCountdown();
+</script>
+@endpush
