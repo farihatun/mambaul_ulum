@@ -325,8 +325,98 @@ body{
     </div>
 
 </div>
-
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    let jadwalShalat = null; // Menyimpan data jadwal dari API
+
+    // 1. AMBIL DATA JADWAL SHALAT SEKALI SAAT HALAMAN DIBUKA
+    const apiUrl = "{{ route('jadwal-shalat.index') }}";
+
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Gagal memuat data dari server');
+            return response.json();
+        })
+        .then(data => {
+            jadwalShalat = data; // Menyimpan response API ke variabel global
+            console.log("Jadwal Berhasil Dimuat:", data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    // 2. LOGIKA LIVE CLOCK & COUNTDOWN OTOMATIS (SETIAP 1 DETIK)
+    function updateClockAndCountdown() {
+        const now = new Date();
+
+        // Tampilkan Jam Realtime WITA di <small id="jam"></small>
+        const witaTime = now.toLocaleTimeString('id-ID', {
+            timeZone: 'Asia/Makassar',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false
+        });
+
+        const jamElement = document.getElementById('jamSekarang');
+        if (jamElement) {
+            jamElement.textContent = "Waktu saat ini: " + witaTime + " WITA";
+        }
+
+        // Jika data jadwal shalat belum beres dimuat dari API, hentikan countdown sementara
+        if (!jadwalShalat) return;
+
+        // Daftar target waktu shalat hari ini berdasarkan key API Anda
+        const targetShalat = [
+            { nama: 'Subuh', waktu: jadwalShalat.Fajr },
+            { nama: 'Dzuhur', waktu: jadwalShalat.Dhuhr },
+            { nama: 'Ashar', waktu: jadwalShalat.Asr },
+            { nama: 'Maghrib', waktu: jadwalShalat.Maghrib },
+            { nama: 'Isya', waktu: jadwalShalat.Isha }
+        ];
+
+        let targetBerikutnya = null;
+
+        // Cari waktu shalat pertama yang jamnya belum terlewat hari ini
+        for (let shalat of targetShalat) {
+            const [jamShalat, menitShalat] = shalat.waktu.split(':');
+            const waktuTarget = new Date();
+            waktuTarget.setHours(parseInt(jamShalat), parseInt(menitShalat), 0, 0);
+
+            if (waktuTarget > now) {
+                targetBerikutnya = { nama: shalat.nama, objekWaktu: waktuTarget, teksWaktu: shalat.waktu };
+                break;
+            }
+        }
+
+        // Jika semua shalat hari ini sudah lewat (di atas jam Isya), targetnya adalah Subuh besok
+        if (!targetBerikutnya) {
+            const [jamSubuh, menitSubuh] = targetShalat[0].waktu.split(':');
+            const subuhBesok = new Date();
+            subuhBesok.setDate(subuhBesok.getDate() + 1);
+            subuhBesok.setHours(parseInt(jamSubuh), parseInt(menitSubuh), 0, 0);
+            targetBerikutnya = { nama: 'Subuh (Besok)', objekWaktu: subuhBesok, teksWaktu: targetShalat[0].waktu };
+        }
+
+        // Hitung selisih waktu (milidetik)
+        let selisih = targetBerikutnya.objekWaktu - now;
+
+        // Konversi ke format Jam:Menit:Detik
+        const jamSisa = String(Math.floor((selisih % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+        const menitSisa = String(Math.floor((selisih % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        const detikSisa = String(Math.floor((selisih % (1000 * 60)) / 1000)).padStart(2, '0');
+
+        // Cetak tulisan status dan countdown ke elemen HTML Anda
+        // Pastikan Anda sudah membuat ID elemen berikut di file Blade Anda!
+        document.getElementById('statusShalat').textContent = `Menuju ${targetBerikutnya.nama} ${targetBerikutnya.teksWaktu}`;
+        document.getElementById('hitungMundur').textContent = `${jamSisa}:${menitSisa}:${detikSisa}`;
+    }
+
+    // Jalankan fungsi pengulangan per 1 detik
+    setInterval(updateClockAndCountdown, 1000);
+});
+</script>
+
+{{-- <script>
+
 function updateJam(){
     const now = new Date();
     document.getElementById('jam').innerHTML =
@@ -334,7 +424,7 @@ function updateJam(){
 }
 setInterval(updateJam,1000);
 updateJam();
-</script>
+</script> --}}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

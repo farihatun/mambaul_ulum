@@ -126,12 +126,11 @@
                 </span>
                 <span style="opacity:0.5;">|</span>
                 <i class="bi bi-moon-stars"></i>
-                <span>
-                    Menuju {{ $nextPrayer ?? 'Dzuhur' }}
-                    <span style="font-weight: 600; color: #fcd34d;">{{ $nextPrayerTime ?? '12:15' }}</span>
+                <span id="statusShalat">
                 </span>
+
                 <span style="opacity:0.5;">|</span>
-                <span id="countdownSholat" style="font-weight: 600; color: #fcd34d;">
+                <span id="hitungMundur" style="font-weight: 600; color: #fcd34d;">
                     {{ $countdown ?? '00:00:00' }}
                 </span>
             </div>
@@ -365,10 +364,16 @@
 
 @endsection
 
-@push('scripts')
+{{-- @push('scripts')
 <script>
 function updateClock() {
     const now = new Date();
+
+    const wita24 = now.toLocaleTimeString('id-ID', {
+        timeZone: 'Asia/Makassar',
+        hour12: false
+    });
+    console.log(wita24);
     const jam = String(now.getHours()).padStart(2, '0');
     const menit = String(now.getMinutes()).padStart(2, '0');
     const detik = String(now.getSeconds()).padStart(2, '0');
@@ -403,4 +408,4 @@ setInterval(updateCountdown, 1000);
 updateClock();
 updateCountdown();
 </script>
-@endpush
+@endpush --}}

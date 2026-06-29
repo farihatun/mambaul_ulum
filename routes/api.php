@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AbsensiController;
+use App\Http\Controllers\Api\JadwalShalatController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ModulController;
 
@@ -32,6 +33,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
+Route::resource('jadwal-shalat', JadwalShalatController::class);
 
 
 Route::get('/profile/{id}', [ProfileController::class, 'show']);
