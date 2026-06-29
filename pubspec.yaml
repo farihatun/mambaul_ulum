@@ -1,0 +1,65 @@
+name: mambaul_ulum
+description: Aplikasi Mambaul Ulum
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # HTTP API Laravel
+  http: ^1.2.2
+
+  # State Management
+  provider: ^6.1.2
+
+  # Penyimpanan Lokal
+  shared_preferences: ^2.5.3
+
+  # Kalender
+  table_calendar: ^3.1.2
+
+  # PDF Viewer
+  syncfusion_flutter_pdfviewer: ^31.1.17
+
+  # Download PDF
+  dio: ^5.8.0+1
+  path_provider: ^2.1.5
+  open_filex: ^4.7.0
+  url_launcher: ^6.3.1
+
+  # Firebase
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.0.0
+  cloud_firestore: ^6.0.0
+
+  # Lokasi & Jadwal Sholat
+  geolocator: ^14.0.2
+  adhan: ^2.0.0
+
+  # Format Tanggal
+  intl: ^0.20.2
+
+  # Icon Tambahan
+  font_awesome_flutter: ^10.8.0
+
+  universal_html: ^2.2.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/pdf/
