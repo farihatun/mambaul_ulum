@@ -14,18 +14,12 @@ class JadwalShalatController extends Controller
      */
     public function index()
     {
+        $hariIni = now()->format('Y-m-d');
+
         $curl = curl_init();
 
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.myquran.com/v3/sholat/jadwal/918317b57931b6b7a7d29490fe5ec9f9/today?utc=Asia/Makassar",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => ["Accept: application/json"],
-        ]);
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://api.myquran.com/v3/sholat/jadwal/918317b57931b6b7a7d29490fe5ec9f9/today?utc=Asia/Makassar",
+            CURLOPT_URL => "https://api.myquran.com/v2/sholat/jadwal/1805/" . $hariIni,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => ["Accept: application/json"],
