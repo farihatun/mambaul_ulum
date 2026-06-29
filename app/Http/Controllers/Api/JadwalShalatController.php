@@ -22,28 +22,43 @@ class JadwalShalatController extends Controller
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => ["Accept: application/json"],
         ]);
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "https://api.myquran.com/v3/sholat/jadwal/918317b57931b6b7a7d29490fe5ec9f9/today?utc=Asia/Makassar",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => ["Accept: application/json"],
+        ]);
 
         $response = curl_exec($curl);
+        $err = curl_error($curl);
 
         curl_close($curl);
-        $responseArray = json_decode($response, true);
-        $hariIni = now()->format('Y-m-d');
 
-        // 3. Masuk ke dalam struktur data -> jadwal -> tanggal hari ini
-        $jadwal = $responseArray['data']['jadwal'][$hariIni] ?? null;
+        // 1. Tangani jika ada error pada koneksi cURL
+        if ($err) {
+            return response()->json(['error' => 'cURL Error: ' . $err], 500);
+        }
+
+        // 2. Decode string JSON dari API myQuran v3
+        $dataDecoded = json_decode($response, true);
+
+        // 3. Masuk ke hierarki v3: data -> jadwal (tanpa key tanggal lagi)
+        $jadwal = $dataDecoded['data']['jadwal'] ?? null;
 
         if ($jadwal) {
-            // 4. Kembalikan data dalam bentuk JSON Object bersih ke JavaScript di View Blade
+            // 4. Kembalikan objek bersih dengan format key yang seragam untuk JS & Flutter
             return response()->json([
-                'Fajr'    => $jadwal['subuh'],
-                'Dhuhr'   => $jadwal['dzuhur'],
-                'Asr'     => $jadwal['ashar'],
-                'Maghrib' => $jadwal['maghrib'],
-                'Isha'    => $jadwal['isya']
+                'Fajr'    => $jadwal['subuh'] ?? '--:--',
+                'Dhuhr'   => $jadwal['dzuhur'] ?? '--:--',
+                'Asr'     => $jadwal['ashar'] ?? '--:--',
+                'Maghrib' => $jadwal['maghrib'] ?? '--:--',
+                'Isha'    => $jadwal['isya'] ?? '--:--'
             ]);
         }
 
-        return response()->json(['error' => 'Jadwal hari ini tidak ditemukan'], 404);
+        return response()->json(['error' => 'Struktur data API berubah atau tidak ditemukan'], 404);
     }
 
     /**
