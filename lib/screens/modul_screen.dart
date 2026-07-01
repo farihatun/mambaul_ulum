@@ -1,8 +1,14 @@
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart'; // Required for kIsWeb
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:ui_web' as ui_web;
-import 'package:universal_html/html.dart' as html;
+import 'package:path_provider/path_provider.dart';
+
+// Conditional imports: genuine web libraries on Chrome, safe stub on Android
+import 'web_stub.dart' if (dart.library.js_interop) 'dart:ui_web' as ui_web;
+import 'web_stub.dart' if (dart.library.js_interop) 'package:universal_html/html.dart' as html;
+import 'web_stub.dart' if (dart.library.js_util) 'package:flutter_pdfview/flutter_pdfview.dart' as mobile_pdf;
 import '../services/api_service.dart';
 
 class ModulScreen extends StatefulWidget {
@@ -154,22 +160,54 @@ class PdfViewerScreen extends StatefulWidget {
 
 class _PdfViewerScreenState extends State<PdfViewerScreen> {
   late String _viewId;
+  String? _localPdfPath;
+  bool _isDownloadingMobilePdf = true;
 
   @override
   void initState() {
     super.initState();
-    // Membuat ID unik untuk komponen tampilan web HTML
     _viewId = 'pdf-iframe-${DateTime.now().millisecondsSinceEpoch}';
 
-    // Mendaftarkan elemen IFrame bawaan browser ke dalam mesin registrasi Flutter Web
-    ui_web.platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
-      final element = html.IFrameElement()
-        ..src = widget.fileUrl
-        ..style.border = 'none'
-        ..style.width = '100%'
-        ..style.height = '100%';
-      return element;
-    });
+    if (kIsWeb) {
+      // 1. Web Configuration
+      ui_web.platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
+        final element = html.IFrameElement()
+          ..src = widget.fileUrl
+          ..style.border = 'none'
+          ..style.width = '100%'
+          ..style.height = '100%';
+        return element;
+      });
+    } else {
+      // 2. Mobile Configuration: Download the remote file into the phone's memory cache
+      downloadNetworkPdf();
+    }
+  }
+
+  Future<void> downloadNetworkPdf() async {
+    try {
+      final response = await http.get(Uri.parse(widget.fileUrl));
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+        final tempDir = await getTemporaryDirectory();
+        
+        // Use a unique file name derived from the URL or timestamp
+        final filename = 'modul_${DateTime.now().millisecondsSinceEpoch}.pdf';
+        final file = File('${tempDir.path}/$filename');
+        
+        await file.writeAsBytes(bytes, flush: true);
+        
+        setState(() {
+          _localPdfPath = file.path;
+          _isDownloadingMobilePdf = false;
+        });
+      } else {
+        throw Exception("Gagal mengunduh file, status: ${response.statusCode}");
+      }
+    } catch (e) {
+      setState(() => _isDownloadingMobilePdf = false);
+      print("Error downloading network PDF: $e");
+    }
   }
 
   @override
@@ -180,8 +218,26 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         backgroundColor: const Color(0xFF0B5D35),
         foregroundColor: Colors.white,
       ),
-      // Menampilkan IFrame HTML asli sebagai sebuah Widget Flutter biasa
-      body: HtmlElementView(viewType: _viewId),
+      body: kIsWeb
+          ? HtmlElementView(viewType: _viewId) // Web Engine
+          : _isDownloadingMobilePdf
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFF0B5D35),
+                  ),
+                )
+              : _localPdfPath != null
+                  ? mobile_pdf.PDFView(filePath: _localPdfPath) // Native Mobile Engine
+                  : const Center(
+                      child: Text(
+                        "Gagal menampilkan PDF modul.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF0B5D35),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
     );
   }
 }
